@@ -1,0 +1,6 @@
+{
+    "port": "/dev/tty.usbserial-1420",
+    "board": "arduino:avr:uno",
+    "programmer": "arduino:avrisp",
+    "sketch": "Hardware/Dummy_Telegram/Dummy_Telegram.ino"
+}
