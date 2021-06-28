@@ -8,6 +8,7 @@ const measurementSchema = new Schema({
   electricConsumptionHigh: Number,
   electricYieldLow: Number,
   electricYieldHigh: Number,
+  lowHighTariff: String,
   electricConsumptionCurrent: Number,
   electricyYieldCurrent: Number,
   gasConsumption: Number,

@@ -9,9 +9,9 @@ import requests
 
 
 # Constants Configuration
-api = "http://localhost/"
+api = "http://localhost/measurements"
 token = "eyJhbGciOiJ"
-jsonAPI = {"meterName" : "meter1", "token": token}
+jsonAPI = {"meter_name" : "meter1", "token": token}
 
 # Seriele poort confguratie
 ser = serial.Serial()
@@ -48,28 +48,28 @@ while True:
         if re.match(b'1-0:1.8.1', telegram_line):
             plusT1 = telegram_line[10:-7].decode('ascii').strip()
             plusT1 = float(plusT1)
-            jsonAPI.update({'electricConsumptionLow': plusT1})
+            jsonAPI.update({'electric_consumption_low': plusT1})
             print("+T1 Afgenomen stroom dal: " + str(plusT1) + " kWh")
 
         ## Meterstand stroom Piek (afgenomen)
         if re.match(b'1-0:1.8.2', telegram_line):
             plusT2 = telegram_line[10:-7].decode('ascii').strip()
             plusT2 = float(plusT2)
-            jsonAPI.update({'electricConsumptionHigh': plusT2})
+            jsonAPI.update({'electric_consumption_high': plusT2})
             print("+T2 Afgenomen stroom piek: " + str(plusT2) + " kWh")
         
         ## Meterstand stroom Dal (teruggave)
         if re.match(b'1-0:2.8.1', telegram_line):
             minT1 = telegram_line[10:-7].decode('ascii').strip()
             minT1 = float(minT1)
-            jsonAPI.update({'electricYieldLow': minT1})
+            jsonAPI.update({'electric_yield_low': minT1})
             print("-T1 Afgenomen stroom dal: " + str(minT1) + " kWh")
         
         ## Meterstand stroom piek (teruggave)
         if re.match(b'1-0:2.8.2', telegram_line):
             minT2 = telegram_line[10:-7].decode('ascii').strip()
             minT2 = float(minT2)
-            jsonAPI.update({'electricYieldHigh': minT2})
+            jsonAPI.update({'electric_yield_high': minT2})
             print("-T2 Afgenomen stroom piek: " + str(minT2) + " kWh")
 
         ## Huidige verbruikstand
@@ -87,21 +87,21 @@ while True:
         if re.match(b'1-0:1.7.0', telegram_line):
             currentUse = telegram_line[12:-6].decode('ascii').strip()
             currentUse = float(currentUse)
-            jsonAPI.update({'electricConsumptionCurrent': currentUse})
+            jsonAPI.update({'electric_consumption_current': currentUse})
             print("Huidig verbruik " + str(currentUse) + " kWh")      
 
         ## Huidig teruggave
         if re.match(b'1-0:2.7.0', telegram_line):
             currentYield = telegram_line[12:-6].decode('ascii').strip()
             currentYield = float(currentYield)
-            jsonAPI.update({'electricyYieldCurrent': currentYield})
+            jsonAPI.update({'electric_yield_current': currentYield})
             print("Huidig teruggave " + str(currentYield) + " kWh")    
 
         ## Huidige gas stand
         if re.match(b'0-1:24.3.0', telegram_line):
             # We dont need this line. We need the next one
             gas = ser.readline()[1:-3].decode('ascii').strip()
-            jsonAPI.update({'gasConsumption': gas})
+            jsonAPI.update({'gas_consumption': gas})
             print("Huidig gas stand " + str(gas) + " m3")   
 
     # Check wanneer het uitroepteken ontvangen wordt (einde telegram)
@@ -110,9 +110,10 @@ while True:
             #ser.close()
     ser.close()
 
-    requestReturn = requests.post(api, data = jsonAPI)
-    print(requestReturn)
-    json_dump = json.dumps(jsonAPI)         # Dump Json
+    requestReturn = requests.post(api, json=jsonAPI)
+    json_dump = json.dumps(jsonAPI, indent=4)         # Dump Json
+    
+    print(requestReturn)                    # Check errors for Requests
     print(json_dump)                        # Print out JSON for Debug
 
     time.sleep(5)                           # Slow down Fetching data

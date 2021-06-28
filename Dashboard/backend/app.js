@@ -43,6 +43,7 @@ app.get('/measurements', async (req, res) => {
         electricConsumptionHigh: measurement.electricConsumptionHigh,
         electricYieldLow:measurement.electricYieldLow,
         electricYieldHigh : measurement.electricYieldHigh,
+        lowHighTariff : measurement.lowHighTariff,
         electricConsumptionCurrent : measurement.electricConsumptionCurrent,
         electricyYieldCurrent : measurement.electricyYieldCurrent,
         gasConsumption : measurement.gasConsumption,
@@ -64,12 +65,14 @@ app.post('/measurements', async (req, res) => {
   const electricConsumptionHigh = req.body.electric_consumption_high;
   const electricYieldLow = req.body.electric_yield_low;
   const electricYieldHigh = req.body.electric_yield_high;
+  const lowHighTariff = req.body.tariff;
   const electricConsumptionCurrent = req.body.electric_consumption_current;
   const electricyYieldCurrent = req.body.electric_yield_current;
   const gasConsumption = req.body.gas_consumption;
 
   if (!meterName || meterName.trim().length === 0) {
     console.log('INVALID INPUT - NO METER DEFINED');
+    console.log(req.body);
     return res.status(422).json({ message: 'ERROR NO METER IN JSON.' });
   }
 
@@ -79,6 +82,7 @@ app.post('/measurements', async (req, res) => {
     electricConsumptionHigh: electricConsumptionHigh,
     electricYieldLow: electricYieldLow,
     electricYieldHigh: electricYieldHigh,
+    lowHighTariff: lowHighTariff,
     electricConsumptionCurrent: electricConsumptionCurrent,
     electricyYieldCurrent: electricyYieldCurrent,
     gasConsumption: gasConsumption,

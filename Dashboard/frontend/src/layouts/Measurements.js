@@ -38,6 +38,7 @@ const Measurements = (props) => {
                       <th className="border-0">Electriciteit Verbruik Piek</th>
                       <th className="border-0">Electriciteit Teruggave Dal</th>
                       <th className="border-0">Electriciteit Teruggave Piek</th>
+                      <th className="border-0">Electriciteit Piek of Dal</th>
                       <th className="border-0">
                         Electriciteit Huidige verbruik
                       </th>
@@ -58,6 +59,7 @@ const Measurements = (props) => {
                         electricConsumptionHigh={measurement.electricConsumptionHigh}
                         electricYieldLow={measurement.electricYieldLow}
                         electricYieldHigh={measurement.electricYieldHigh}
+                        lowHighTariff = {measurement.lowHighTariff}
                         electricConsumptionCurrent={measurement.electricConsumptionCurrent}
                         electricyYieldCurrent={measurement.electricyYieldCurrent}
                         gasConsumption={measurement.gasConsumption}
