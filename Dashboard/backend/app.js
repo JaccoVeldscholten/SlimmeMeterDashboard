@@ -25,13 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', async (req, res) => {
-  console.log('API Test');
-    res.status(200).json({ message: 'API IS UP AND RUNNING.' });
-});
-
-
-app.get('/measurements', async (req, res) => {
+// Get all user info
+app.get('/measurements/all', async (req, res) => {
   console.log('TRYING TO FETCH MEASUREMENTS');
   try {
     const measurement = await Measurement.find();
@@ -55,6 +50,76 @@ app.get('/measurements', async (req, res) => {
     console.error('ERROR FETCHING MEASUREMENT');
     console.error(err.message);
     res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Getting current energy usage
+app.get('/measurements/electric/current', async (req, res) => {
+  console.log('TRYING TO FETCH ELECTRIC CURRENT CONSUMPTION');
+  try {
+    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('electricConsumptionCurrent logTimeStamp').limit(1);
+    res.status(200).json(measurement[0].electricConsumptionCurrent);
+    console.log('FETCHED ELECTRIC CURRENT CONSUMPTION');
+  } catch (err) {
+    console.error('ERROR FETCHING ELECTRIC CURRENT CONSUMPTION');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Getting Low & High Consumption
+app.get('/measurements/electric/lowhigh', async (req, res) => {
+  console.log('TRYING TO FETCH ELECTRIC LOW HIGH');
+  try {
+    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('electricConsumptionLow electricConsumptionHigh logTimeStamp').limit(1);
+    res.status(200).json(measurement);
+    console.log('FETCHED ELECTRIC CURRENT LOW HIGH');
+  } catch (err) {
+    console.error('ERROR FETCHING ELECTRIC CURRENT LOW HIGH');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Getting Low & High Yield
+app.get('/measurements/electric/yield', async (req, res) => {
+  console.log('TRYING TO FETCH ELECTRIC YIELD LOW HIGH');
+  try {
+    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('electricYieldLow electricYieldHigh logTimeStamp').limit(1);
+    res.status(200).json(measurement);
+    console.log('FETCHED ELECTRIC CURRENT YIELD LOW HIGH');
+  } catch (err) {
+    console.error('ERROR FETCHING ELECTRIC CURRENT YIELD LOW HIGH');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Getting Gas Usage for today
+app.get('/measurements/gas', async (req, res) => {
+  console.log('TRYING TO FETCH GAS CONSUMPTION');
+  try {
+    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('gasConsumption logTimeStamp').limit(1);
+    res.status(200).json(measurement);
+    console.log('FETCHED GAS CONSUMPTION');
+  } catch (err) {
+    console.error('ERROR FETCHING GAS CONSUMPTION');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Delete by specified ID
+app.delete('/measurements/:id', async (req, res) => {
+  console.log('TRYING TO DELETE MEASUREMENT');
+  try {
+    await Measurement.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: 'Deleted measurement!' });
+    console.log('DELETED MEASUREMENT');
+  } catch (err) {
+    console.error('ERROR FETCHING MEASUREMENT');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to delete measurement.' });
   }
 });
 
@@ -99,19 +164,6 @@ app.post('/measurements', async (req, res) => {
     console.error('ERROR FETCHING MEASUREMENT');
     console.error(err.message);
     res.status(500).json({ message: 'Failed to save measurement.' });
-  }
-});
-
-app.delete('/measurements/:id', async (req, res) => {
-  console.log('TRYING TO DELETE MEASUREMENT');
-  try {
-    await Measurement.deleteOne({ _id: req.params.id });
-    res.status(200).json({ message: 'Deleted measurement!' });
-    console.log('DELETED MEASUREMENT');
-  } catch (err) {
-    console.error('ERROR FETCHING MEASUREMENT');
-    console.error(err.message);
-    res.status(500).json({ message: 'Failed to delete measurement.' });
   }
 });
 
