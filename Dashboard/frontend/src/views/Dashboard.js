@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ChartistGraph from "react-chartist";
+
+const moment = require("moment");
+
 // react-bootstrap components
 import {
   Badge,
@@ -16,12 +19,173 @@ import {
   Tooltip,
 } from "react-bootstrap";
 
+// Global Vars
+var resDataElecCurrent = 0;
+var resDataElecCurrentYield = 0;
+var resDataGasLastDay = 0;
+var resDataElecLastDay = 0;
+var resDataElecLastDayYield = 0;
+var resLastUpdateTime = 0;
+
+// Table arrays
+var elecUsage  = [];
+var elecYield  = [];
+var gasUsage   = [];
+var axisDate = [];
+
 function Dashboard() {
+
+  const [loadedMeasurements, setLoadedData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(function () {
+    async function fetchData() {
+      setIsLoading(true);
+
+      try {
+        // Fetching the first data for head Dashboard
+        const reponseElecCurrent      = await fetch("http://localhost/measurements/electric/current");
+        const reponseElecCurrentYield = await fetch("http://localhost/measurements/electric/currentYield");
+        const reponseGasCurrent       = await fetch("http://localhost/measurements/gas");
+        const reponseElecLastDay      = await fetch("http://localhost/measurements/electric/lowhigh/consumption");
+        const reponseElecLastDayYield = await fetch("http://localhost/measurements/electric/lowhigh/yield");
+
+        // Fetching the tables
+        const reponseElecTable       = await fetch("http://localhost/measurements/electric/all/consumption");
+        const reponseElecYieldTable  = await fetch("http://localhost/measurements/electric/all/yield");
+        const reponseGasTable        = await fetch("http://localhost/measurements/gas/all");
+
+        // Fetching the last time
+        const responselastUpdateTime = await fetch("http://localhost/measurements/time");
+
+        resDataElecCurrent      = await reponseElecCurrent.json();
+        resDataElecCurrentYield = await reponseElecCurrentYield.json();
+        resDataGasLastDay       = await reponseGasCurrent.json();
+        resDataElecLastDay      = await reponseElecLastDay.json();
+        resDataElecLastDayYield = await reponseElecLastDayYield.json();
+        resLastUpdateTime       = await responselastUpdateTime.json();
+
+
+        var resDataElecTable      = await reponseElecTable.json();
+        var resDataElecYieldTable = await reponseElecYieldTable.json();
+        var resDataGasTable       = await reponseGasTable.json();
+        
+        const timestamp = Number(new Date(resLastUpdateTime[0]['logTimeStamp']));
+        resLastUpdateTime = moment(timestamp).format("DD-MM-YYYY HH:mm");
+
+        // Getting values for Consumption Table
+        var counter = 0;
+        for(var e in resDataElecTable) {
+
+          if(counter == 1){
+            var oldVal = resDataElecTable[e].electricConsumptionLow + resDataElecTable[e].electricConsumptionHigh;
+            counter = 0;
+          }
+          else{
+              var newVal = resDataElecTable[e].electricConsumptionLow + resDataElecTable[e].electricConsumptionHigh;
+          }
+          var total = oldVal - newVal;
+          if(total > 0 && total < 1000){
+            elecUsage.push(total);
+          }
+          counter++;
+        }
+
+        // Getting values for Yield Table
+        var counter = 0;
+        for(var e in resDataElecYieldTable) {
+
+          if(counter == 1){
+            var oldVal = resDataElecYieldTable[e].electricYieldLow + resDataElecYieldTable[e].electricYieldHigh;
+            counter = 0;
+          }
+          else{
+            var newVal = resDataElecYieldTable[e].electricYieldLow + resDataElecYieldTable[e].electricYieldHigh ;
+          }
+          var total = oldVal - newVal;
+          if(total > 0 && total < 1000){
+            elecYield.push(total);
+          }
+          counter++;
+        }
+
+        // Getting Values for Gas table
+        var counter = 0;
+        for(var e in resDataGasTable) {
+
+          if(counter == 1){
+            var oldVal = resDataGasTable[e].gasConsumption;
+            counter = 0;
+          }
+          else{
+            var newVal = resDataGasTable[e].gasConsumption;
+          }
+          var total = oldVal - newVal;
+          if(total > 0 && total < 1000){
+            gasUsage.push(total);
+          }
+
+          counter++;
+        }
+
+        console.log(elecUsage.length);
+        // Delete some random values for cleaner visability
+        for(var i = 0 ; i < elecUsage.length + 100; i++){
+          // Delete random values to clean up table. Later this function will be enhanced.
+          console.log(i);
+          if (i % 2 == 0){
+            console.log("even");
+            elecUsage.splice(i, 1);
+            elecYield.splice(i, 1);
+            gasUsage.splice(i, 1);
+          }
+
+        }
+
+
+      var date = new Date();
+      for (let i = 0; i < 10; i++) {
+        date.setDate(date.getDate() - 5);
+        axisDate.push(moment(date).format("DD-MM"));
+      }
+      
+      axisDate.reverse(); // The list needs to be reversed in orde to get it right.
+      
+      
+      // Debug logging
+      console.log(resDataElecCurrent);
+      console.log(resDataElecCurrentYield);
+      console.log(resDataGasLastDay);
+      console.log(resDataElecLastDay);
+      console.log(axisDate);
+      console.log("ElecConsum " + elecUsage);
+      console.log("ElecYield " + elecYield);
+      console.log("GasConsum " + gasUsage);
+      if (!reponseElecCurrent.ok) {
+        throw new Error(resData.message || "Fetched Data for Dashboard");
+      }
+
+      setLoadedData(resData);
+      } catch (err) {
+        setError(
+          err.message ||
+            "Error fetching Data - the server responsed with an error."
+        );
+      }
+      setIsLoading(false);
+    }
+
+    fetchData();
+  }, []);
+
+
+
   return (
     <>
       <Container fluid>
         <Row>
-          <Col lg="3" sm="6">
+        <Col lg="2" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
@@ -32,8 +196,8 @@ function Dashboard() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Huidige verbruik</p>
-                      <Card.Title as="h4">45 KWh</Card.Title>
+                      <p className="card-category">Verbruik</p>
+                      <Card.Title as="h4"><b>{resDataElecCurrent} Kwh</b></Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -42,7 +206,59 @@ function Dashboard() {
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-clock mr-1"></i>
-                  Laatste update 13:00 20-06-2021
+                   Updated: {resLastUpdateTime}
+                </div>
+              </Card.Footer>
+            </Card>
+          </Col>
+          <Col lg="2" sm="6">
+            <Card className="card-stats">
+              <Card.Body>
+                <Row>
+                  <Col xs="5">
+                    <div className="icon-big text-center icon-success">
+                      <i className="fas fa-tachometer-alt text-success"></i>
+                    </div>
+                  </Col>
+                  <Col xs="7">
+                    <div className="numbers">
+                      <p className="card-category">Teruggave</p>
+                      <Card.Title as="h4"><b>{resDataElecCurrentYield} Kwh</b></Card.Title>
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="fas fa-clock mr-1"></i>
+                   Updated: {resLastUpdateTime}
+                </div>
+              </Card.Footer>
+            </Card>
+          </Col>
+          <Col lg="2" sm="6">
+            <Card className="card-stats">
+              <Card.Body>
+                <Row>
+                  <Col xs="5">
+                    <div className="icon-big text-center icon-warning">
+                      <i className="fas fa-fire text-warning"></i>
+                    </div>
+                  </Col>
+                  <Col xs="7">
+                    <div className="numbers">
+                      <p className="card-category">Gas verbruik </p>
+                      <Card.Title as="h4"><b>{resDataGasLastDay} m3</b></Card.Title>
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="fas fa-clock mr-1"></i>
+                   Updated: {resLastUpdateTime}
                 </div>
               </Card.Footer>
             </Card>
@@ -58,8 +274,8 @@ function Dashboard() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Verbruik Dal & Piek</p>
-                      <Card.Title as="h4">50 Kwh</Card.Title>
+                      <p className="card-category">Verbruik Dal & Piek<br></br> <i>(afgelopen 24 uur)</i></p>
+                      <Card.Title as="h4">{resDataElecLastDay} Kwh</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -68,7 +284,7 @@ function Dashboard() {
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-clock mr-1"></i>
-                  Laatste update 13:00 20-06-2021
+                   Updated: {resLastUpdateTime}
                 </div>
               </Card.Footer>
             </Card>
@@ -84,8 +300,8 @@ function Dashboard() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Teruggave Dal & Piek</p>
-                      <Card.Title as="h4">10 Kwh</Card.Title>
+                      <p className="card-category">Teruggave Dal & Piek <i>(afgelopen 24 uur)</i></p>
+                      <Card.Title as="h4"><b>{resDataElecLastDayYield} Kwh</b></Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -94,33 +310,7 @@ function Dashboard() {
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-clock mr-1"></i>
-                  Laatste update 13:00 20-06-2021
-                </div>
-              </Card.Footer>
-            </Card>
-          </Col>
-          <Col lg="3" sm="6">
-            <Card className="card-stats">
-              <Card.Body>
-                <Row>
-                  <Col xs="5">
-                    <div className="icon-big text-center icon-warning">
-                      <i className="fas fa-fire text-warning"></i>
-                    </div>
-                  </Col>
-                  <Col xs="7">
-                    <div className="numbers">
-                      <p className="card-category">Gas verbruik</p>
-                      <Card.Title as="h4">10 m3</Card.Title>
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-              <Card.Footer>
-                <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-clock mr-1"></i>
-                  Laatste update 13:00 20-06-2021
+                   Updated: {resLastUpdateTime}
                 </div>
               </Card.Footer>
             </Card>
@@ -137,34 +327,25 @@ function Dashboard() {
                 <div className="ct-chart" id="chartHours">
                   <ChartistGraph
                     data={{
-                      labels: [
-                        "9:00AM",
-                        "12:00AM",
-                        "3:00PM",
-                        "6:00PM",
-                        "9:00PM",
-                        "12:00PM",
-                        "3:00AM",
-                        "6:00AM",
-                      ],
+                      labels: axisDate,
                       series: [
-                        [287, 385, 490, 492, 554, 586, 698, 695],
-                        [67, 152, 143, 240, 287, 335, 435, 437],
-                        [23, 113, 67, 108, 190, 239, 307, 308],
+                        elecYield,
+                        elecUsage,
+                        gasUsage,
                       ],
                     }}
                     type="Line"
                     options={{
-                      low: 0,
-                      high: 800,
-                      showArea: false,
+                      low: Math.min(gasUsage) - 100,
+                      high: Math.max(elecUsage) + 100,
+                      showArea:- false,
                       height: "245px",
                       axisX: {
                         showGrid: false,
                       },
                       lineSmooth: true,
                       showLine: true,
-                      showPoint: true,
+                      showPoint: false,
                       fullWidth: true,
                       chartPadding: {
                         right: 50,

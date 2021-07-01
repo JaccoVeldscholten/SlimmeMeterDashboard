@@ -12,7 +12,7 @@ const TableList = () => {
       setIsLoading(true);
 
       try {
-        const response = await fetch("http://localhost/measurements");
+        const response = await fetch("http://localhost/measurements/all");
 
         const resData = await response.json();
 

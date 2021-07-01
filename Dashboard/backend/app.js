@@ -67,12 +67,58 @@ app.get('/measurements/electric/current', async (req, res) => {
   }
 });
 
-// Getting Low & High Consumption
-app.get('/measurements/electric/lowhigh', async (req, res) => {
+// Getting current energy usage
+app.get('/measurements/electric/currentyield', async (req, res) => {
+  console.log('TRYING TO FETCH ELECTRIC CURRENT YIELD');
+  try {
+    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('electricyYieldCurrent logTimeStamp').limit(1);
+    res.status(200).json(measurement[0].electricyYieldCurrent);
+    console.log('FETCHED ELECTRIC CURRENT YIELD');
+  } catch (err) {
+    console.error('ERROR FETCHING ELECTRIC CURRENT YIELD');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+
+/***********************************************************************************/
+/*                          Single Value API Requests                              */
+/*                  Useable for data information (ex; current data)                */
+/***********************************************************************************/
+
+// Getting Low & High Consumption of the past 24 Hours
+app.get('/measurements/electric/lowhigh/consumption', async (req, res) => {
   console.log('TRYING TO FETCH ELECTRIC LOW HIGH');
   try {
-    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('electricConsumptionLow electricConsumptionHigh logTimeStamp').limit(1);
-    res.status(200).json(measurement);
+    const measurement = await Measurement
+    .find(
+      {"logTimeStamp":
+        {
+          $gt: new Date(Date.now() - 24*60*60 * 1000)
+        }
+      }
+    )
+    .select("electricConsumptionLow electricConsumptionHigh")
+
+    totalpast = (measurement[0].electricConsumptionLow + 
+             measurement[0].electricConsumptionHigh);
+    
+    totalnew = (measurement[measurement.length - 1].electricConsumptionLow + 
+              measurement[measurement.length - 1].electricConsumptionHigh);
+    
+    total = parseInt(totalnew) - parseInt(totalpast); 
+
+    // Debug
+    console.log("24 Hour ago Low: " + measurement[0].electricConsumptionLow);
+    console.log("24 Hour ago Low: " + measurement[0].electricConsumptionHigh);
+    console.log("Current Low: " + measurement[measurement.length - 1].electricConsumptionLow);
+    console.log("Current High: " + measurement[measurement.length - 1].electricConsumptionHigh);
+    console.log("Total Past: " + totalpast);
+    console.log("Total new: " + totalnew);
+    console.log("Total usage of the past 24 Hours: " + Math.round(total) + " kWh");
+
+    res.status(200).json(Math.round(total));
     console.log('FETCHED ELECTRIC CURRENT LOW HIGH');
   } catch (err) {
     console.error('ERROR FETCHING ELECTRIC CURRENT LOW HIGH');
@@ -81,31 +127,172 @@ app.get('/measurements/electric/lowhigh', async (req, res) => {
   }
 });
 
-// Getting Low & High Yield
-app.get('/measurements/electric/yield', async (req, res) => {
+// Getting Low & High Yield Consumption of the past 24 Hours
+app.get('/measurements/electric/lowhigh/yield', async (req, res) => {
   console.log('TRYING TO FETCH ELECTRIC YIELD LOW HIGH');
   try {
-    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('electricYieldLow electricYieldHigh logTimeStamp').limit(1);
-    res.status(200).json(measurement);
-    console.log('FETCHED ELECTRIC CURRENT YIELD LOW HIGH');
+    const measurement = await Measurement
+    .find(
+      {"logTimeStamp":
+        {
+          $gt: new Date(Date.now() - 24*60*60 * 1000)
+        }
+      }
+    )
+    .select("electricYieldLow electricYieldHigh")
+
+    totalpast = (measurement[0].electricYieldLow + 
+             measurement[0].electricYieldHigh);
+    
+    totalnew = (measurement[measurement.length - 1].electricYieldLow + 
+              measurement[measurement.length - 1].electricYieldHigh);
+    
+    total = parseInt(totalnew) - parseInt(totalpast); 
+
+    // Debug
+    console.log("24 Hour ago Yield Low: " + measurement[0].electricYieldLow);
+    console.log("24 Hour ago Yield Low: " + measurement[0].electricYieldHigh);
+    console.log("Current Yield Low: " + measurement[measurement.length - 1].electricYieldLow);
+    console.log("Current Yield High: " + measurement[measurement.length - 1].electricYieldHigh);
+    console.log("Total Yield Past: " + totalpast);
+    console.log("Total Yield new: " + totalnew);
+    console.log("Total Yield of the past 24 Hours: " + Math.round(total) + " kWh");
+
+    res.status(200).json(Math.round(total));
+    console.log('FETCHED ELECTRIC YIELD LOW HIGH');
   } catch (err) {
-    console.error('ERROR FETCHING ELECTRIC CURRENT YIELD LOW HIGH');
+    console.error('ERROR FETCHING ELECTRIC YIELD LOW HIGH');
     console.error(err.message);
     res.status(500).json({ message: 'Failed to load measurment.' });
   }
 });
 
-// Getting Gas Usage for today
+// Getting Gas Consumption past 24 hours
 app.get('/measurements/gas', async (req, res) => {
-  console.log('TRYING TO FETCH GAS CONSUMPTION');
+  console.log('TRYING TO FETCH GAS USAGE PAST 24 HOURS');
   try {
-    const measurement = await Measurement.find().sort({logTimeStamp: -1}).select('gasConsumption logTimeStamp').limit(1);
-    res.status(200).json(measurement);
-    console.log('FETCHED GAS CONSUMPTION');
+    const measurement = await Measurement
+    .find(
+      {"logTimeStamp":
+        {
+          $gt: new Date(Date.now() - 24*60*60 * 1000)
+        }
+      }
+    )
+    .select("gasConsumption")
+
+    totalpast = (measurement[0].gasConsumption);
+    
+    totalnew = (measurement[measurement.length - 1].gasConsumption);
+    
+    total = parseInt(totalnew) - parseInt(totalpast); 
+
+    // Debug
+    console.log("24 Hour ago Gas : " + measurement[0].gasConsumption);
+    console.log("Current Gas : " + measurement[measurement.length - 1].gasConsumption);
+    console.log("Total Gas of the past 24 Hours: " + Math.round(total) + " m3");
+
+    res.status(200).json(Math.round(total));
+    console.log('FETCHED GAS');
   } catch (err) {
-    console.error('ERROR FETCHING GAS CONSUMPTION');
+    console.error('ERROR FETCHING GAS');
     console.error(err.message);
     res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+/***********************************************************************************/
+/*                          Multi Value API Requests                               */
+/*                  Useable for data information (ex; current tables)              */
+/***********************************************************************************/
+
+// Getting Low & High Consumption of the past 24 Hours All documents
+app.get('/measurements/electric/all/consumption', async (req, res) => {
+  console.log('TRYING TO FETCH ELECTRIC LOW HIGH');
+  try {
+    const measurement = await Measurement
+    .find(
+      {"logTimeStamp":
+        {
+          $gt: new Date(Date.now() - 24*60*60 * 1000)
+        }
+      }
+    )
+    .select("electricConsumptionLow electricConsumptionHigh logTimeStamp")
+
+    res.status(200).json(measurement);
+    console.log('FETCHED ELECTRIC CURRENT');
+  } catch (err) {
+    console.error('ERROR FETCHING ELECTRIC CURRENT');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Getting Low & High Yield Consumption of the past 24 Hours All documents
+app.get('/measurements/electric/all/yield', async (req, res) => {
+  console.log('TRYING TO FETCH ELECTRIC YIELD ');
+  try {
+    const measurement = await Measurement
+    .find(
+      {"logTimeStamp":
+        {
+          $gt: new Date(Date.now() - 24*60*60 * 1000)
+        }
+      }
+    )
+    .select("electricYieldLow electricYieldHigh logTimeStamp")
+
+    
+    res.status(200).json(measurement);
+    console.log('FETCHED ELECTRIC YIELD ');
+  } catch (err) {
+    console.error('ERROR FETCHING ELECTRIC YIELD');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+// Getting Gas Consumption past 24 hours All documents
+app.get('/measurements/gas/all', async (req, res) => {
+  console.log('TRYING TO FETCH GAS USAGE PAST 24 HOURS');
+  try {
+    const measurement = await Measurement
+    .find(
+      {"logTimeStamp":
+        {
+          $gt: new Date(Date.now() - 24*60*60 * 1000)
+        }
+      }
+    )
+    .select("gasConsumption logTimeStamp")
+    
+
+    res.status(200).json(measurement);
+    console.log('FETCHED GAS');
+  } catch (err) {
+    console.error('ERROR FETCHING GAS');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load measurment.' });
+  }
+});
+
+/***********************************************************************************/
+/*                          Editing Value API Requests                             */
+/*                   For editing ID specified elements of database                 */
+/***********************************************************************************/
+
+// Getting Last update Time
+app.get('/measurements/time', async (req, res) => {
+  console.log('TRYING TO FETCH UPDATE TIME');
+  try {
+    const logTimeStamp = await Measurement.find().sort({logTimeStamp: -1}).select('logTimeStamp').limit(1);
+    res.status(200).json(logTimeStamp);
+    console.log('FETCHED UPDATE TIME');
+  } catch (err) {
+    console.error('ERROR FETCHING UPDATE TIME');
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to load time.' });
   }
 });
 
@@ -123,6 +310,7 @@ app.delete('/measurements/:id', async (req, res) => {
   }
 });
 
+// Create new Measuremente
 app.post('/measurements', async (req, res) => {
   console.log('TRYING TO STORE MEASUREMENT');
   const meterName = req.body.meter_name;
@@ -154,6 +342,8 @@ app.post('/measurements', async (req, res) => {
     logTimeStamp: Date.now()
   });
 
+  console.log(Date.now())
+
   try {
     await measurement.save();
     res
@@ -167,6 +357,10 @@ app.post('/measurements', async (req, res) => {
   }
 });
 
+/***********************************************************************************/
+/*                          Connection of MongoDB                                  */
+/***********************************************************************************/
+// Access to MongoDB
 mongoose.connect(
   `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb:27017/slimmemeter?authSource=admin`,
   {
