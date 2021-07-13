@@ -1,13 +1,15 @@
-FROM node:14
+FROM arm32v7/node
 
 # Set working directory
-WORKDIR /app
+WORKDIR /
 
 # Copy Package
 COPY package.json ./
 
 # Install Deps
-RUN npm install 
+RUN npm install --force       
+RUN npm i react
+RUN npm i react-scripts
 
 # Copy the app to Workdir
 COPY . ./
