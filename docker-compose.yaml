@@ -7,6 +7,8 @@ services:
       - data:/data/db
     env_file: 
       - ./env/mongo.env
+    expose:
+      - "27017"
     ports:
       - 27017:27017
 
@@ -14,7 +16,7 @@ services:
     build: ./backend
     container_name: backend-api
     ports:
-      - '80:80'
+      - 3000:3000
     volumes: 
       - logs:/app/logs
       - ./backend:/app
@@ -23,19 +25,41 @@ services:
       - ./env/backend.env
     depends_on:
       - mongodb
+    image: jjveldscholten/slimmemeterdashboard-backend
 
   frontend:
     build: ./frontend
     container_name: frontend-dashboard
-    ports: 
-      - '3000:3000'
+    ports:
+      - 3000:3000
     volumes: 
       - ./frontend/src:/app/src
     stdin_open: true
     tty: true
     depends_on: 
       - backend
+    image: jjveldscholten/slimmemeterdashboard
+
+  reverse-proxy:
+      image: valian/docker-nginx-auto-ssl:latest
+      container_name: reverse-proxy
+      restart: on-failure
+      ports:
+        - 80:80
+        - 443:443
+      volumes:
+        - ./.ssl-data:/etc/resty-auto-ssl
+      environment:
+        ALLOWED_DOMAINS: '(meter-api|meter).veldscholten.tech'
+        SITES: 'meter-api.veldscholten.tech=backend:80;meter.veldscholten.tech=frontend:80'
+        FORCE_HTTPS: "true"
+      depends_on:
+        - mongodb
+        - backend
+        - frontend
+
 
 volumes: 
   data:
   logs:
+  .ssl-data:

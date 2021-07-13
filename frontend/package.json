@@ -3,21 +3,21 @@
   "version": "2.0.0",
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.3",
+    "axios": "0.21.1",
     "bootstrap": "5.0.2",
     "chartist": "0.11.4",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
+    "moment": "2.29.1",
     "node-sass": "6.0.0",
-    "react": "17.0.2",
+    "react": "^17.0.2",
     "react-bootstrap": "1.6.1",
     "react-chartist": "0.14.4",
     "react-dom": "17.0.2",
     "react-notification-alert": "0.0.13",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.3",
-    "axios": "0.21.1",
-    "moment": "2.29.1"
+    "react-scripts": "^4.0.3"
   },
   "optionalDependencies": {
     "jquery": "3.6.0",
