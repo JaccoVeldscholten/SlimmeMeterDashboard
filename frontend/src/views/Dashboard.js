@@ -45,19 +45,19 @@ function Dashboard() {
 
       try {
         // Fetching the first data for head Dashboard
-        const reponseElecCurrent      = await fetch("http://54.93.196.211:3010/measurements/electric/current");
-        const reponseElecCurrentYield = await fetch("http://54.93.196.211:3010/measurements/electric/currentYield");
-        const reponseGasCurrent       = await fetch("http://54.93.196.211:3010/measurements/gas");
-        const reponseElecLastDay      = await fetch("http://54.93.196.211:3010/measurements/electric/lowhigh/consumption");
-        const reponseElecLastDayYield = await fetch("http://54.93.196.211:3010/measurements/electric/lowhigh/yield");
+        const reponseElecCurrent      = await fetch("https://meter-api.veldscholten.tech/measurements/electric/current");
+        const reponseElecCurrentYield = await fetch("https://meter-api.veldscholten.tech/measurements/electric/currentYield");
+        const reponseGasCurrent       = await fetch("https://meter-api.veldscholten.tech/measurements/gas");
+        const reponseElecLastDay      = await fetch("https://meter-api.veldscholten.tech/measurements/electric/lowhigh/consumption");
+        const reponseElecLastDayYield = await fetch("https://meter-api.veldscholten.tech/measurements/electric/lowhigh/yield");
 
         // Fetching the tables
-        const reponseElecTable       = await fetch("http://54.93.196.211:3010/measurements/electric/all/consumption");
-        const reponseElecYieldTable  = await fetch("http://54.93.196.211:3010/measurements/electric/all/yield");
-        const reponseGasTable        = await fetch("http://54.93.196.211:3010/measurements/gas/all");
+        const reponseElecTable       = await fetch("https://meter-api.veldscholten.tech/measurements/electric/all/consumption");
+        const reponseElecYieldTable  = await fetch("https://meter-api.veldscholten.tech/measurements/electric/all/yield");
+        const reponseGasTable        = await fetch("https://meter-api.veldscholten.tech/measurements/gas/all");
 
         // Fetching the last time
-        const responselastUpdateTime = await fetch("http://54.93.196.211:3010/measurements/time");
+        const responselastUpdateTime = await fetch("https://meter-api.veldscholten.tech/measurements/time");
 
         resDataElecCurrent      = await reponseElecCurrent.json();
         resDataElecCurrentYield = await reponseElecCurrentYield.json();

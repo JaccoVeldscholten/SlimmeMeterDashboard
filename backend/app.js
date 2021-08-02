@@ -373,7 +373,7 @@ mongoose.connect(
       console.error(err);
     } else {
       console.log('CONNECTED TO MONGODB!!');
-      app.listen(3010);
+      app.listen(80);
     }
   }
 );

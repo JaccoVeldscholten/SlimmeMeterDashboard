@@ -12,7 +12,7 @@ const TableList = () => {
       setIsLoading(true);
 
       try {
-        const response = await fetch("http://54.93.196.211:3010/measurements/all");
+        const response = await fetch("https://meter-api.veldscholten.tech/measurements/all");
 
         const resData = await response.json();
 
