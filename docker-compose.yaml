@@ -1,46 +1,41 @@
-# version: "3.8"
-# services:
-#   mongodb:
-#     image: 'mongo'
-#     container_name: mongodb
-#     volumes: 
-#       - data:/data/db
-#     env_file: 
-#       - ./env/mongo.env
-#     expose:
-#       - "27017"
-#     ports:
-#       - 27017:27017
+version: "3.8"
+services:
+  #mongodb:
+  #  image: 'mongo'
+  # container_name: mongodb
+  # volumes: 
+  #   - data:/data/db
+  # env_file: 
+  #   - ./env/mongo.env
+  # ports:
+  #   - 27017:27017
 
   backend:
     build: ./backend
-    container_name: backend-api
+    container_name: jjveldscholten/slimmemeter-backend
     ports:
-      - 3000:3000
+      - '80:80'
     volumes: 
       - logs:/app/logs
       - ./backend:/app
       - /app/node_modules
-    env_file: 
-      - ./env/backend.env
-    #depends_on:
-    #  - mongodb
-    image: jjveldscholten/slimmemeterdashboard-backend
+  # env_file: 
+  #   - ./env/backend.env
+  #  depends_on:
+  #    - mongodb
 
   frontend:
     build: ./frontend
-    container_name: frontend-dashboard
-    ports:
-      - 3000:3000
+    container_name: jjveldscholten/slimmemeter-frontend
+    ports: 
+      - '3000:3000'
     volumes: 
       - ./frontend/src:/app/src
     stdin_open: true
     tty: true
     depends_on: 
       - backend
-    image: jjveldscholten/slimmemeterdashboard
 
 volumes: 
   data:
   logs:
-  .ssl-data:
