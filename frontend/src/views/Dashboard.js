@@ -375,7 +375,7 @@ function Dashboard() {
           <Col md="4">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Verglijking afgelopend maand</Card.Title>
+                <Card.Title as="h4">Verglijking afgelopen 24 uur</Card.Title>
                 <p className="card-category">Verbruik & Teruggave</p>
               </Card.Header>
               <Card.Body>
@@ -385,8 +385,8 @@ function Dashboard() {
                 >
                   <ChartistGraph
                     data={{
-                      labels: ["80%", "20%"],
-                      series: [80, 20],
+                      labels: ["80%", "20%", "10%"],
+                      series: [70, 20, 10],
                     }}
                     type="Pie"
                   />
@@ -394,6 +394,7 @@ function Dashboard() {
                 <div className="legend">
                   <i className="fas fa-circle text-danger"></i>Verbruik
                   <i className="fas fa-circle text-info"></i>Teruggave
+                  <i className="fas fa-circle text-warning"></i>Gas
                 </div>
                 <hr></hr>
                 <div className="stats">
