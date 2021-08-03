@@ -74,21 +74,107 @@ function Dashboard() {
         const timestamp = Number(new Date(resLastUpdateTime[0]['logTimeStamp']));
         resLastUpdateTime = moment(timestamp).format("DD-MM-YYYY HH:mm");
 
+        // Getting values for Consumption Table
+        var counter = 0;
+        for(var e in resDataElecTable) {
 
-
-        if (!reponseElecCurrent.ok) {
-          throw new Error(resData.message || "Fetched Data for Dashboard");
+          if(counter == 1){
+            var oldVal = resDataElecTable[e].electricConsumptionLow + resDataElecTable[e].electricConsumptionHigh;
+            counter = 0;
+          }
+          else{
+              var newVal = resDataElecTable[e].electricConsumptionLow + resDataElecTable[e].electricConsumptionHigh;
+          }
+          var total = oldVal - newVal;
+          if(total > 0 && total < 1000){
+            elecUsage.push(total);
+          }
+          counter++;
         }
 
-        setLoadedData(resData);
-        } catch (err) {
-          setError(
-            err.message ||
-              "Error fetching Data - the server responsed with an error."
-          );
+        // Getting values for Yield Table
+        var counter = 0;
+        for(var e in resDataElecYieldTable) {
+
+          if(counter == 1){
+            var oldVal = resDataElecYieldTable[e].electricYieldLow + resDataElecYieldTable[e].electricYieldHigh;
+            counter = 0;
+          }
+          else{
+            var newVal = resDataElecYieldTable[e].electricYieldLow + resDataElecYieldTable[e].electricYieldHigh ;
+          }
+          var total = oldVal - newVal;
+          if(total > 0 && total < 1000){
+            elecYield.push(total);
+          }
+          counter++;
         }
-        setIsLoading(false);
+
+        // Getting Values for Gas table
+        var counter = 0;
+        for(var e in resDataGasTable) {
+
+          if(counter == 1){
+            var oldVal = resDataGasTable[e].gasConsumption;
+            counter = 0;
+          }
+          else{
+            var newVal = resDataGasTable[e].gasConsumption;
+          }
+          var total = oldVal - newVal;
+          if(total > 0 && total < 1000){
+            gasUsage.push(total);
+          }
+
+          counter++;
+        }
+
+        console.log(elecUsage.length);
+        // Delete some random values for cleaner visability
+        for(var i = 0 ; i < elecUsage.length + 100; i++){
+          // Delete random values to clean up table. Later this function will be enhanced.
+          console.log(i);
+          if (i % 2 == 0){
+            console.log("even");
+            elecUsage.splice(i, 1);
+            elecYield.splice(i, 1);
+            gasUsage.splice(i, 1);
+          }
+
+        }
+
+
+      var date = new Date();
+      for (let i = 0; i < 10; i++) {
+        date.setDate(date.getDate() - 5);
+        axisDate.push(moment(date).format("DD-MM"));
       }
+      
+      axisDate.reverse(); // The list needs to be reversed in orde to get it right.
+      
+      
+      // Debug logging
+      console.log(resDataElecCurrent);
+      console.log(resDataElecCurrentYield);
+      console.log(resDataGasLastDay);
+      console.log(resDataElecLastDay);
+      console.log(axisDate);
+      console.log("ElecConsum " + elecUsage);
+      console.log("ElecYield " + elecYield);
+      console.log("GasConsum " + gasUsage);
+      if (!reponseElecCurrent.ok) {
+        throw new Error(resData.message || "Fetched Data for Dashboard");
+      }
+
+      setLoadedData(resData);
+      } catch (err) {
+        setError(
+          err.message ||
+            "Error fetching Data - the server responsed with an error."
+        );
+      }
+      setIsLoading(false);
+    }
 
     fetchData();
   }, []);
@@ -231,85 +317,10 @@ function Dashboard() {
           </Col>
         </Row>
         <Row>
-          <Col md="6">
-            <Card>
-              <Card.Header>
-                <Card.Title as="h4">Afgelopen week</Card.Title>
-                <p className="card-category">Verbruik & Teruggave van de afgelopen week</p>
-              </Card.Header>
-              <Card.Body>
-                <div className="ct-chart" id="chartActivity">
-                  <ChartistGraph
-                    data={{
-                      labels: [
-                        "Maandag",
-                        "Dinsdag",
-                        "Woensdag",
-                        "Donderdag",
-                        "Vrijdag",
-                        "Zaterdag",
-                        "Zondag",
-                      ],
-                      series: [
-                        [
-                          542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756,
-                          895,
-                        ],
-                        [
-                          412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636,
-                          695,
-                        ],
-                        [
-                          512, 243, 42, 580, 453, 353, 300, 364, 368, 410, 636,
-                          695,
-                        ],
-                      ],
-                    }}
-                    type="Bar"
-                    options={{
-                      seriesBarDistance: 10,
-                      axisX: {
-                        showGrid: false,
-                      },
-                      height: "245px",
-                    }}
-                    responsiveOptions={[
-                      [
-                        "screen and (max-width: 640px)",
-                        {
-                          seriesBarDistance: 5,
-                          axisX: {
-                            labelInterpolationFnc: function (value) {
-                              return value[0];
-                            },
-                          },
-                        },
-                      ],
-                    ]}
-                  />
-                </div>
-              </Card.Body>
-              <Card.Footer>
-                <div className="legend">
-                  <i className="fas fa-circle text-info"></i> Energie Verbruik
-                  <i className="fas fa-circle text-danger"></i> Energie
-                  Teruggave
-                  <i className="fas fa-circle text-warning"></i> Gas verbruik
-                </div>
-                <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-check"></i>
-                  Data information certified
-                </div>
-              </Card.Footer>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
           <Col md="8">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Afgelopen Jaar</Card.Title>
+                <Card.Title as="h4">Afgelopen maand</Card.Title>
                 <p className="card-category">Verbruik & Teruggrave</p>
               </Card.Header>
               <Card.Body>
@@ -375,7 +386,7 @@ function Dashboard() {
           <Col md="4">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Verglijking afgelopen 24 uur</Card.Title>
+                <Card.Title as="h4">Verglijking</Card.Title>
                 <p className="card-category">Verbruik & Teruggave</p>
               </Card.Header>
               <Card.Body>
@@ -385,8 +396,8 @@ function Dashboard() {
                 >
                   <ChartistGraph
                     data={{
-                      labels: ["80%", "20%", "10%"],
-                      series: [70, 20, 10],
+                      labels: ["80%", "20%"],
+                      series: [80, 20],
                     }}
                     type="Pie"
                   />
@@ -394,7 +405,6 @@ function Dashboard() {
                 <div className="legend">
                   <i className="fas fa-circle text-danger"></i>Verbruik
                   <i className="fas fa-circle text-info"></i>Teruggave
-                  <i className="fas fa-circle text-warning"></i>Gas
                 </div>
                 <hr></hr>
                 <div className="stats">
@@ -402,6 +412,86 @@ function Dashboard() {
                   Laatste update 13:00 21-06-2021
                 </div>
               </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md="6">
+            <Card>
+              <Card.Header>
+                <Card.Title as="h4">Jaar overzicht</Card.Title>
+                <p className="card-category">Jaar overzicht verbruik</p>
+              </Card.Header>
+              <Card.Body>
+                <div className="ct-chart" id="chartActivity">
+                  <ChartistGraph
+                    data={{
+                      labels: [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "Mai",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                      ],
+                      series: [
+                        [
+                          542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756,
+                          895,
+                        ],
+                        [
+                          412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636,
+                          695,
+                        ],
+                        [
+                          512, 243, 42, 580, 453, 353, 300, 364, 368, 410, 636,
+                          695,
+                        ],
+                      ],
+                    }}
+                    type="Bar"
+                    options={{
+                      seriesBarDistance: 10,
+                      axisX: {
+                        showGrid: false,
+                      },
+                      height: "245px",
+                    }}
+                    responsiveOptions={[
+                      [
+                        "screen and (max-width: 640px)",
+                        {
+                          seriesBarDistance: 5,
+                          axisX: {
+                            labelInterpolationFnc: function (value) {
+                              return value[0];
+                            },
+                          },
+                        },
+                      ],
+                    ]}
+                  />
+                </div>
+              </Card.Body>
+              <Card.Footer>
+                <div className="legend">
+                  <i className="fas fa-circle text-info"></i> Energie Verbruik
+                  <i className="fas fa-circle text-danger"></i> Energie
+                  Teruggave
+                  <i className="fas fa-circle text-warning"></i> Gas verbruik
+                </div>
+                <hr></hr>
+                <div className="stats">
+                  <i className="fas fa-check"></i>
+                  Data information certified
+                </div>
+              </Card.Footer>
             </Card>
           </Col>
         </Row>

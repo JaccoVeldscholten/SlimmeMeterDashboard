@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "author": "Maximilian Schwarzmüller / Academind GmbH",
+  "author": "Jacco Veldscholten",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",

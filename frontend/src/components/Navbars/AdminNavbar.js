@@ -30,13 +30,12 @@ function Header() {
     <Navbar bg="light" expand="lg">
       <Container fluid>
         <div className="d-flex justify-content-right align-items-right ml-2 ml-lg-0">
-          <Button onClick={mobileSidebarToggle}>
+          <Button onClick={mobileSidebarToggle}></Button>
             <Navbar.Toggle aria-controls="basic-navbar-nav" className="mr-2">
               <span className="navbar-toggler-bar burger-lines"></span>
               <span className="navbar-toggler-bar burger-lines"></span>
               <span className="navbar-toggler-bar burger-lines"></span>
             </Navbar.Toggle>
-          </Button>
         </div>
       </Container>
     </Navbar>
