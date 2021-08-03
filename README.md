@@ -1,4 +1,5 @@
 [![Docker Build & Deploy](https://github.com/JaccoVeldscholten/SlimmeMeterDashboard/actions/workflows/docker.yml/badge.svg)](https://github.com/JaccoVeldscholten/SlimmeMeterDashboard/actions/workflows/docker.yml)
+[![Arduino Dummy Meter](https://github.com/JaccoVeldscholten/SlimmeMeterDashboard/actions/workflows/arduino.yml/badge.svg)](https://github.com/JaccoVeldscholten/SlimmeMeterDashboard/actions/workflows/arduino.yml)
 
 # slimmemeter
 P1 Measurement Dashboard Application &amp; Beyond.
