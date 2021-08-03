@@ -18,8 +18,8 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Start containers
-      run: docker-compose run --rm
+      run: docker-compose up -d 
 
     - name: Stop containers
       if: always()
-      run: docker-compose -f "docker-compose.yml" down
+      run: docker-compose down -v
