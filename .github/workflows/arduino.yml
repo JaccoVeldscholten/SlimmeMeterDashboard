@@ -6,7 +6,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
       with: 
-        path: '/hardware'
+        path: 'hardware'
     
     - name: Build for Atemga328
       uses: Legion2/arduino-builder-action@v2.0.0
