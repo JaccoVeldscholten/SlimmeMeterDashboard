@@ -34,7 +34,7 @@ services:
     stdin_open: true
     tty: true
     depends_on: 
-      -backend
+      - backend
 
 volumes: 
   data:
