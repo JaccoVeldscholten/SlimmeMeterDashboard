@@ -1,6 +1,14 @@
-FROM node
+# Build command : docker build -t jjveldscholten/slimmemeter-backend .
+# Run Command   : docker run -it -p 80:80 --name backend jjveldscholten/slimmemeter-backend
+# Push Command  : docker push jjveldscholten/slimmemeter-backend
 
-WORKDIR /app
+FROM arm32v7/node
+
+WORKDIR /
+
+
+RUN apt-get update -y \
+    && apt-get -y install curl python build-essential git ca-certificates 
 
 COPY package.json .
 

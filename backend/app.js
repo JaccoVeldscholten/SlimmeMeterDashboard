@@ -362,7 +362,7 @@ app.post('/measurements', async (req, res) => {
 /***********************************************************************************/
 // Access to MongoDB
 mongoose.connect(
-  `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb:27017/slimmemeter?authSource=admin`,
+  `mongodb+srv://hoi:bobba55@meter.et2j9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

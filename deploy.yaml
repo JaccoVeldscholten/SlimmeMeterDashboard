@@ -1,0 +1,88 @@
+########################################################################
+#                      Kubernetes Deployments                          #           
+# 1 = Backend API Container Running Internal Port 80    (NodeJS)       # 
+# 2 = Frontend    Container Running on Internal port 3000 (react)      # 
+#                                                                      #
+#  Deployments are replicated 2 times in the Cluster for redundancy    #
+########################################################################
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: jjveldscholten/slimmemeter-backend
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: jjveldscholten/slimmemeter-frontend
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 3000
+
+#######################################################################
+#                         Kubernetes Services                         #           
+# 1 = Backend  API NodePort Route Port   80 -> NodePort 30030         # 
+# 2 = Frontend     NodePort Route Port 3000 -> NodePort 30031         # 
+#######################################################################
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30030
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 30031

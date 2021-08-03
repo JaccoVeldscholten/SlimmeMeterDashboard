@@ -12,21 +12,21 @@ services:
 
   backend:
     build: ./backend
-    container_name: backend-api
+    container_name: jjveldscholten/slimmemeter-backend
     ports:
       - '80:80'
     volumes: 
       - logs:/app/logs
       - ./backend:/app
       - /app/node_modules
-    env_file: 
-      - ./env/backend.env
+  # env_file: 
+  #   - ./env/backend.env
   #  depends_on:
   #    - mongodb
 
   frontend:
     build: ./frontend
-    container_name: frontend-dashboard
+    container_name: jjveldscholten/slimmemeter-frontend
     ports: 
       - '3000:3000'
     volumes: 
