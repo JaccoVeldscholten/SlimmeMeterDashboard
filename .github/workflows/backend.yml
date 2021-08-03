@@ -32,10 +32,14 @@ jobs:
       run: docker-compose up -d 
       
     - name: Push container Backend
-      run: docker push jjveldscholten/slimmemeter-backend
+      run: | 
+        docker rename backend jjveldscholten/slimmemeter-backend
+        docker push jjveldscholten/slimmemeter-backend
       
     - name: Push container Frontend
-      run: docker push jjveldscholten/slimmemeter-frontend
+      run: | 
+        docker rename frontend jjveldscholten/slimmemeter-frontend
+        docker push jjveldscholten/slimmemeter-frontend
       
     - name: Stop containers
       if: always()
