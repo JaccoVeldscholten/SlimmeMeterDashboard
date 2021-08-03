@@ -33,12 +33,12 @@ jobs:
       
     - name: Push container Backend
       run: | 
-        docker rename backend jjveldscholten/slimmemeter-backend
+        docker rename backend-api jjveldscholten/slimmemeter-backend
         docker push jjveldscholten/slimmemeter-backend
       
     - name: Push container Frontend
       run: | 
-        docker rename frontend jjveldscholten/slimmemeter-frontend
+        docker rename frontend-dashboard jjveldscholten/slimmemeter-frontend
         docker push jjveldscholten/slimmemeter-frontend
       
     - name: Stop containers
