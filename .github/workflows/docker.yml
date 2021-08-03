@@ -1,0 +1,46 @@
+name: Test
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1 
+    -
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    -
+      name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Start containers
+      run: docker-compose up -d 
+      
+    - name: Push container Backend
+      run: | 
+        docker rename backend-api jjveldscholten/slimmemeter-backend
+        docker push jjveldscholten/slimmemeter-backend
+      
+    - name: Push container Frontend
+      run: | 
+        docker rename frontend-dashboard jjveldscholten/slimmemeter-frontend
+        docker push jjveldscholten/slimmemeter-frontend
+      
+    - name: Stop containers
+      if: always()
+      run: docker-compose down -v
