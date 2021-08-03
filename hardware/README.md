@@ -14,7 +14,7 @@ Another option is to use the printed circuit board designed for this project. Th
 ToDo will be added
 
 ## Designed PCB
-ToDo will be added
+![render](/images/render.png)
 
 
 ## Contributing
