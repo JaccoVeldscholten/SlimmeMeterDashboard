@@ -12,7 +12,8 @@ services:
 
   backend:
     build: ./backend
-    container_name: jjveldscholten/slimmemeter-backend
+    container_name: slimmemeter-backend
+    image: jjveldscholten/slimmemeter-backend 
     ports:
       - '80:80'
     volumes: 
@@ -26,7 +27,8 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: jjveldscholten/slimmemeter-frontend
+    container_name: slimmemeter-frontend
+    image: jjveldscholten/slimmemeter-frontend 
     ports: 
       - '3000:3000'
     volumes: 

@@ -9,7 +9,7 @@
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
     "moment": "2.29.1",
-    "node-sass": "6.0.0",
+    "node-sass": "6.0.1",
     "react": "^17.0.2",
     "react-bootstrap": "1.6.1",
     "react-chartist": "0.14.4",
@@ -22,7 +22,7 @@
   "optionalDependencies": {
     "jquery": "3.6.0",
     "reactstrap": "8.9.0",
-    "typescript": "4.3.4"
+    "typescript": "4.3.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -48,6 +48,6 @@
     ]
   },
   "devDependencies": {
-    "prettier": "2.3.1"
+    "prettier": "2.3.2"
   }
 }

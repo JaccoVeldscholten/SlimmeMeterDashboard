@@ -29,17 +29,10 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
     - name: Start containers
-      run: docker-compose up -d 
+      run: docker-compose up -d --build
       
     - name: Push container Backend
-      run: | 
-        docker rename backend-api jjveldscholten/slimmemeter-backend
-        docker push jjveldscholten/slimmemeter-backend
-      
-    - name: Push container Frontend
-      run: | 
-        docker rename frontend-dashboard jjveldscholten/slimmemeter-frontend
-        docker push jjveldscholten/slimmemeter-frontend
+      run: docker-compose push
       
     - name: Stop containers
       if: always()
