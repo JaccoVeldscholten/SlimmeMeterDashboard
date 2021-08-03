@@ -2789,7 +2789,6 @@ Copyright (c) 2015 Daniel Eden
   top: 0;
   width: 1px;
   background-color: #dddddd;
-  card-body: "";
   position: absolute;
 }
 .card .ct-chart {
@@ -2940,6 +2939,7 @@ Copyright (c) 2015 Daniel Eden
   justify-content: flex-start;
   text-align: left;
   text-anchor: start;
+  transform: rotate(45);
 }
 
 .ct-label.ct-vertical.ct-start {

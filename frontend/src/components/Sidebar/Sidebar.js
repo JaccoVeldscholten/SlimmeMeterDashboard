@@ -19,7 +19,7 @@ function Sidebar({ color, image, routes }) {
       <div className="sidebar-wrapper">
         <div className="logo d-flex align-items-center justify-content-start">
           <h4>
-            <i class="fa fa-bolt"></i> Power Measurement
+            <i className="fa fa-bolt"></i> Power Measurement
           </h4>
         </div>
         <Nav>
