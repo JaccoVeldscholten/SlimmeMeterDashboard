@@ -1,0 +1,14 @@
+name: Arduino Dummy Meter
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with: 
+        path: '/hardware'
+    
+    - name: Build for Atemga328
+      uses: Legion2/arduino-builder-action@v2.0.0
+      with:
+        board: "arduino:avr:atmega328"
