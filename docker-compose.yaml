@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  #mongodb:
+  #  image: 'mongo'
+  # container_name: mongodb
+  # volumes: 
+  #   - data:/data/db
+  # env_file: 
+  #   - ./env/mongo.env
+  # ports:
+  #   - 27017:27017
+
+  backend:
+    build: ./backend
+    container_name: slimmemeter-backend
+    image: jjveldscholten/slimmemeter-backend 
+    ports:
+      - '3010:3010'
+    volumes: 
+      - logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules
+    env_file: 
+      - ./env/backend.env
+   # depends_on:
+   #   - mongodb
+
+  frontend:
+    build: ./frontend
+    container_name: slimmemeter-frontend
+    image: jjveldscholten/slimmemeter-frontend 
+    ports: 
+      - '3000:3000'
+    volumes: 
+      - ./frontend/src:/app/src
+    env_file: 
+      - ./env/frontend.env
+    stdin_open: true
+    tty: true
+    depends_on: 
+      - backend
+
+volumes: 
+  data:
+  logs:

@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "Jacco Veldscholten",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootstrap": "^5.0.2",
+    "bootstrap-css-only": "^4.4.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.5",
+    "morgan": "^1.10.0",
+    "react-bootstrap": "^1.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}

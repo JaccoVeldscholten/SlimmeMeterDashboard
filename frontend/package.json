@@ -1,0 +1,53 @@
+{
+  "name": "light-bootstrap-dashboard-react",
+  "version": "2.0.0",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "5.15.3",
+    "axios": "0.21.1",
+    "bootstrap": "5.0.2",
+    "chartist": "0.11.4",
+    "gulp": "4.0.2",
+    "gulp-append-prepend": "1.0.9",
+    "moment": "2.29.1",
+    "node-sass": "6.0.1",
+    "react": "^17.0.2",
+    "react-bootstrap": "1.6.1",
+    "react-chartist": "0.14.4",
+    "react-dom": "17.0.2",
+    "react-notification-alert": "0.0.13",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "^4.0.3"
+  },
+  "optionalDependencies": {
+    "jquery": "3.6.0",
+    "reactstrap": "8.9.0",
+    "typescript": "4.3.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && gulp licenses",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "compile:scss": "node-sass src/assets/scss/light-bootstrap-dashboard-react.scss src/assets/css/light-bootstrap-dashboard-react.css",
+    "minify:scss": "node-sass src/assets/scss/light-bootstrap-dashboard-react.scss src/assets/css/light-bootstrap-dashboard-react.min.css --output-style compressed",
+    "map:scss": "node-sass src/assets/scss/light-bootstrap-dashboard-react.scss src/assets/css/light-bootstrap-dashboard-react.css --source-map true",
+    "build:scss": "npm run compile:scss && npm run minify:scss && npm run map:scss"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "2.3.2"
+  }
+}

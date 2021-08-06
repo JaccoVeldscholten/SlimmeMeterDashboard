@@ -1,0 +1,30 @@
+------------------------------------------------------------------------------------------
+Gerber File Extension Report For: Schema.GBR   23-3-2021  16:34:58
+------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------
+Layer Extension     Layer Description                      
+------------------------------------------------------------------------------------------
+.gbr                Top Layer                               
+.gbr                Bottom Layer                            
+.gbr                Bottom Pad Master                       
+.gbr                Top Pad Master                          
+.gbr                Bottom Overlay                          
+.gbr                Bottom Solder                           
+.gbr                Bottom Paste                            
+.gbr                Top Overlay                             
+.gbr                Top Paste                               
+.gbr                Top Solder                              
+.gbr                Keep-Out Layer                          
+.gbr                Top Assembly                            
+.gbr                Bottom Designator                       
+.gbr                Bottom Assembly                         
+.gbr                Bottom Courtyard                        
+.gbr                Top 3D Body                             
+.gbr                Mechanical 1                            
+.gbr                Bottom 3D Body                          
+.gbr                Top Designator                          
+.gbr                Top Courtyard                           
+.gbr                Profile                                 
+------------------------------------------------------------------------------------------
