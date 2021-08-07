@@ -9,7 +9,7 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("/KMP5 ZABF001551793811");
+  Serial.println("/KMP5 RANDOMSERIAL");
   Serial.println("");
   Serial.println("0-0:96.1.1(205A414246303031353531373933383131)");
   Serial.println("1-0:1.8.1(30652.450*kWh)");                                  // +T1 = 30652 Kwh (Counter reading off-peak) Power off-peak rate
