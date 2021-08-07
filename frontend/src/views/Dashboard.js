@@ -46,7 +46,7 @@ function Dashboard() {
       console.log(process.env.REACT_APP_API_URL)
       try {
         // Fetching the pretty prepared data
-        const measurementsRaw            = await fetch(process.env.REACT_APP_API_URL + "/measurements/7days");
+        const measurementsRaw            = await fetch(process.env.REACT_APP_API_URL + "/measurements/week");
         const measurements              = await measurementsRaw.json();
         console.log(measurements);
         setLoadedData(measurements.reverse());
