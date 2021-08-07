@@ -16,17 +16,16 @@ const TableList = () => {
 
         const resData = await response.json();
 
-        console.log(resData.measurements);
 
         if (!response.ok) {
-          throw new Error(resData.message || "Fetching the goals failed.");
+          throw new Error(resData.message || "Fetching the measurements failed.");
         }
 
         setLoadedMeasurements(resData.measurements);
       } catch (err) {
         setError(
           err.message ||
-            "Fetching goals failed - the server responsed with an error."
+            "Fetching measurements failed - the server responsed with an error."
         );
       }
       setIsLoading(false);

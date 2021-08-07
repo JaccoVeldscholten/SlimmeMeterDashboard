@@ -25,7 +25,7 @@ const Measurements = (props) => {
               <Card.Header>
                 <Card.Title as="h4">Log Data</Card.Title>
                 <p className="card-category">
-                  All data from Database logged by max 5 year
+                  All data from Database logged by max 100 latest logs
                 </p>
               </Card.Header>
               <Card.Body className="table-full-width table-responsive px-0">
