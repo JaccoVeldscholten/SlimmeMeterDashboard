@@ -8,6 +8,12 @@ const morgan = require('morgan');
 
 const Measurement = require('./models/measurement');
 
+// Import functions that are required for fetching specified data
+const prepareData = require('./functions/preparedata.js')
+const fetchsevendays = require('./functions/fetch7days.js')
+const fetchmonth = require('./functions/fetchmonth.js')
+const fetchyear = require('./functions/fetchyear.js')
+
 const app = express();
 
 app.use(cors())
@@ -29,99 +35,34 @@ app.use(function (req, res, next) {
 });
 
 
-/*!
-getMeasurementsFromLast7Days() Retreives 7 days of data and returns it in JSON	
-*/
-
-const getMeasurementsFromLast7Days = async () => {
-  const aboutAWeekAgoWeekAgo = new Date()
-  aboutAWeekAgoWeekAgo.setDate(aboutAWeekAgoWeekAgo.getDate() - 7)
-  const measurements = await Measurement.find({ logTimeStamp: { $gte: aboutAWeekAgoWeekAgo } }).sort({ logTimeStamp: -1 })
-
-  const filteredMeasurements = []
-
-  for (let i = 0; i < 7; i++) {
-    const daysAgo = new Date()
-    daysAgo.setHours(0, 0, 0, 0)
-    daysAgo.setDate(daysAgo.getDate() - i)
-    const daysAgoPlus1 = new Date()
-    daysAgoPlus1.setHours(0, 0, 0, 0)
-    daysAgoPlus1.setDate(daysAgoPlus1.getDate() - i + 1)
-
-    const todaysMeasurements = measurements.filter((measurement) => {
-      if (i === 0) {
-        return measurement.logTimeStamp.getTime() + measurement.logTimeStamp.getTimezoneOffset() * 60 * 1000 > daysAgo.getTime()
-      }
-
-      return measurement.logTimeStamp.getTime() + measurement.logTimeStamp.getTimezoneOffset() * 60 * 1000 > daysAgo.getTime() && measurement.logTimeStamp.getTime() + measurement.logTimeStamp.getTimezoneOffset() * 60 * 1000 <= daysAgoPlus1.getTime()
-    })
-
-    const firstAndLastMeasurement = []
-
-    let firstRecord = {}
-    let secondRecord = {}
-
-    if (todaysMeasurements.length > 1) {
-      Object.assign(firstRecord, todaysMeasurements[0]._doc);
-      Object.assign(secondRecord, todaysMeasurements[todaysMeasurements.length - 1]._doc);
-      firstRecord.logTimeStamp = firstRecord.logTimeStamp.getTime() + firstRecord.logTimeStamp.getTimezoneOffset() * 60 * 1000
-      secondRecord.logTimeStamp = secondRecord.logTimeStamp.getTime() + secondRecord.logTimeStamp.getTimezoneOffset() * 60 * 1000
-      console.log(firstRecord.logTimeStamp.toString())
-      console.log(secondRecord.logTimeStamp.toString())
-    }
-
-    if (todaysMeasurements.length > 1) {
-      firstAndLastMeasurement.push(firstRecord)
-      firstAndLastMeasurement.push(secondRecord)
-      filteredMeasurements.push(firstAndLastMeasurement)
-    }
-  }
-
-  return filteredMeasurements
-}
-
-const prepareDataForFront = async (data) => {
-  const fetchedDates = []
-  const preparedMeasurements = []
-
-  const dates = await data
-
-  dates.map(async (date) => {
-    fetchedDates.push(date)
-  })
-
-  fetchedDates.map((today) => {
-    // today[0] is latest, today[1] is earliest
-    if (today[0] && today[1]) {
-      const todayData = {
-        electricityConsumed: (today[0].electricConsumptionLow + today[0].electricConsumptionHigh) - (today[1].electricConsumptionLow + today[1].electricConsumptionHigh),
-        electricityProduced: (today[0].electricYieldLow + today[0].electricYieldHigh) - (today[1].electricYieldLow + today[1].electricYieldHigh),
-        gasConsumed: (today[0].gasConsumption) - (today[1].gasConsumption),
-        meterName: today[0].meterName,
-        logTimeStamp: today[1].logTimeStamp
-      }
-
-      preparedMeasurements.push(todayData)
-    }
-  })
-
-  return preparedMeasurements
-}
-
 // All docs from past 7 days
 app.get('/measurements/7days', async (req, res) => {
   console.log('TRYING TO FETCH 7 DAYS OF MEASUREMENTS');
-  const measurements = await prepareDataForFront(getMeasurementsFromLast7Days())
-  res.send(measurements)
+  const measurements = await prepareData.prepare(fetchsevendays.getMeasurementsFromLast7Days());
+  res.send(measurements);
+});
+
+// All docs from past moth
+app.get('/measurements/month', async (req, res) => {
+  console.log('TRYING TO FETCH MONTH OF MEASUREMENTS');
+  const measurements = await prepareData.prepare(fetchmonth.getMeasurementsFromLastMonth());
+  res.send(measurements);
+});
+
+// All docs from past year
+app.get('/measurements/year', async (req, res) => {
+  console.log('TRYING TO FETCH MONTH OF MEASUREMENTS');
+  const measurements = await prepareData.prepare(fetchyear.getMeasurementsFromCurrentYear());
+  res.send(measurements);
 });
 
 
-// All docs
+// All docs limited by 100
 app.get('/measurements/all', async (req, res) => {
-  console.log('TRYING TO FETCH MEASUREMENTS');
+  console.log('TRYING TO FETCH LATEST MEASUREMENTS LIMITED BY 100');
 
   try {
-    const measurement = await Measurement.find();
+    const measurement = await Measurement.find().limit(100).sort({logTimeStamp : -1});
     res.status(200).json({
       measurements: measurement.map((measurement) => ({
         id: measurement.id,
