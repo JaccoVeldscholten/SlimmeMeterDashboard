@@ -426,7 +426,8 @@ app.post("/measurements", async (req, res) => {
 // Access to MongoDB
 console.log(process.env.MONGODB_USERNAME);
 mongoose.connect(
-   `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@meter.et2j9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  // `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@meter.et2j9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  `mongodb+srv://admin:qn0Xqx4RnGKPTZ9d@meter.et2j9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
