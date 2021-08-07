@@ -42,6 +42,7 @@ The recommended way is using Docker / Kubernetes.
 However, the data must be modified in the /env folder. This should contain the corrosive MongoDB data
 
 - backend.env user & password mongodb
+- frontend.env for setting the right API Url
 - mongo.env for self-hosting with docker/kubernetes
 
 #### Access
