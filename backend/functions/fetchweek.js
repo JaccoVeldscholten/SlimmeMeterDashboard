@@ -1,38 +1,25 @@
 const Measurement = require("../models/measurement.js");
 
 /*!
-const howManyDaysFromBegin() Retreives amount of days past this month
-*/
-function howManyDaysFromBegin() {
-  const amountOfDaysPast = new Date().getDay() + 1;
-  console.log("Days past this month: " + amountOfDaysPast);
-  return amountOfDaysPast;
-}
-
-/*!
-const getMeasurementsFromLastMonth() Retreives howManyDaysFromBegin of data and returns it in JSON	
+getMeasurementsFromLastWeek() Retreives 7 days of data and returns it in JSON	
 */
 
-const getMeasurementsFromLastMonth = async () => {
+const getMeasurementsFromLastWeek = async () => {
   const aboutAWeekAgoWeekAgo = new Date();
-  aboutAWeekAgoWeekAgo.setDate(
-    aboutAWeekAgoWeekAgo.getDate() - howManyDaysFromBegin()
-  );
+  aboutAWeekAgoWeekAgo.setDate(aboutAWeekAgoWeekAgo.getDate() - 7);
   const measurements = await Measurement.find({
     logTimeStamp: { $gte: aboutAWeekAgoWeekAgo },
   }).sort({ logTimeStamp: -1 });
-  //console.log(measurements);
+
   const filteredMeasurements = [];
 
-  for (let i = 0; i < howManyDaysFromBegin(); i++) {
+  for (let i = 0; i < 7; i++) {
     const daysAgo = new Date();
-    //console.log(i);
     daysAgo.setHours(0, 0, 0, 0);
     daysAgo.setDate(daysAgo.getDate() - i);
     const daysAgoPlus1 = new Date();
     daysAgoPlus1.setHours(0, 0, 0, 0);
     daysAgoPlus1.setDate(daysAgoPlus1.getDate() - i + 1);
-    //console.log(daysAgoPlus1)
 
     const todaysMeasurements = measurements.filter((measurement) => {
       if (i === 0) {
@@ -42,6 +29,7 @@ const getMeasurementsFromLastMonth = async () => {
           daysAgo.getTime()
         );
       }
+
       return (
         measurement.logTimeStamp.getTime() +
           measurement.logTimeStamp.getTimezoneOffset() * 60 * 1000 >
@@ -51,14 +39,6 @@ const getMeasurementsFromLastMonth = async () => {
           daysAgoPlus1.getTime()
       );
     });
-
-    console.log("Amount docs irritration: " + todaysMeasurements.length);
-
-    if (todaysMeasurements.length == 0) {
-      // Temp Memory Leak fix.
-      // When reached 0 docs (because to less data) the function will be aborted
-      return filteredMeasurements;
-    }
 
     const firstAndLastMeasurement = [];
 
@@ -92,5 +72,5 @@ const getMeasurementsFromLastMonth = async () => {
 };
 
 module.exports = {
-  getMeasurementsFromLastMonth,
+  getMeasurementsFromLastWeek,
 };
