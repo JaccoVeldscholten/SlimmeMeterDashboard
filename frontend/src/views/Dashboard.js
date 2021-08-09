@@ -43,7 +43,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      console.log(process.env.REACT_APP_API_URL)
+      console.log("Choosen URL API: " + process.env.REACT_APP_API_URL)
       try {
         // Fetching the pretty prepared data
         const measurementsRaw            = await fetch(process.env.REACT_APP_API_URL + "/measurements/week");
