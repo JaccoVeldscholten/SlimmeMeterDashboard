@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: jjveldscholten/slimmemeter-backend:latest
+        image: jjveldscholten/slimmemeter-backend
         imagePullPolicy: "Always"
         ports:
         - containerPort: 3010
@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: jjveldscholten/slimmemeter-frontend:latest
+        image: jjveldscholten/slimmemeter-frontend
         imagePullPolicy: "Always"
         ports:
         - containerPort: 3000

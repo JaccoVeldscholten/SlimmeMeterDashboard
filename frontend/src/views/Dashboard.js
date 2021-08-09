@@ -46,25 +46,25 @@ function Dashboard() {
       console.log("Choosen URL API: " + process.env.REACT_APP_API_URL)
       try {
         // Fetching the pretty prepared data
-        const measurementsRaw            = await fetch(process.env.REACT_APP_API_URL + "/measurements/week");
+        const measurementsRaw            = await fetch("https://meter-api.veldscholten.tech/measurements/week");
         const measurements              = await measurementsRaw.json();
         console.log(measurements);
         setLoadedData(measurements.reverse());
         
         // // Fetching the first data for head Dashboard
-        const reponseElecCurrent      = await fetch(process.env.REACT_APP_API_URL + "/measurements/electric/current");
-        const reponseElecCurrentYield = await fetch(process.env.REACT_APP_API_URL + "/measurements/electric/currentYield");
-        const reponseGasCurrent       = await fetch(process.env.REACT_APP_API_URL + "/measurements/gas");
-        const reponseElecLastDay      = await fetch(process.env.REACT_APP_API_URL + "/measurements/electric/lowhigh/consumption");
-        const reponseElecLastDayYield = await fetch(process.env.REACT_APP_API_URL + "/measurements/electric/lowhigh/yield");
+        const reponseElecCurrent      = await fetch("https://meter-api.veldscholten.tech/measurements/electric/current");
+        const reponseElecCurrentYield = await fetch("https://meter-api.veldscholten.tech/measurements/electric/currentYield");
+        const reponseGasCurrent       = await fetch("https://meter-api.veldscholten.tech/measurements/gas");
+        const reponseElecLastDay      = await fetch("https://meter-api.veldscholten.tech/measurements/electric/lowhigh/consumption");
+        const reponseElecLastDayYield = await fetch("https://meter-api.veldscholten.tech/measurements/electric/lowhigh/yield");
 
         // Fetching the tables
-        const reponseElecTable       = await fetch(process.env.REACT_APP_API_URL + "/measurements/electric/all/consumption");
-        const reponseElecYieldTable  = await fetch(process.env.REACT_APP_API_URL + "/measurements/electric/all/yield");
-        const reponseGasTable        = await fetch(process.env.REACT_APP_API_URL + "/measurements/gas/all");
+        const reponseElecTable       = await fetch("https://meter-api.veldscholten.tech/measurements/electric/all/consumption");
+        const reponseElecYieldTable  = await fetch("https://meter-api.veldscholten.tech/measurements/electric/all/yield");
+        const reponseGasTable        = await fetch("https://meter-api.veldscholten.tech/measurements/gas/all");
 
         // Fetching the last time
-        const responselastUpdateTime = await fetch(process.env.API_URL + "/measurements/time");
+        const responselastUpdateTime = await fetch("https://meter-api.veldscholten.tech/measurements/time");
 
         resDataElecCurrent      = await reponseElecCurrent.json();
         resDataElecCurrentYield = await reponseElecCurrentYield.json();
